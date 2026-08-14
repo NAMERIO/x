@@ -4,13 +4,13 @@ import { Avatar } from './Avatar';
 
 interface MemberRowProps {
   member: AdminMember;
-  currentUserId?: string;
+  online?: boolean;
   detailed?: boolean;
 }
 
 export function MemberRow({
   member,
-  currentUserId,
+  online = false,
   detailed = false,
 }: MemberRowProps) {
   const roleNames =
@@ -25,7 +25,7 @@ export function MemberRow({
         imageUrl={member.avatarUrl ?? undefined}
         color={avatarColor}
         size={detailed ? 'medium' : 'small'}
-        status={member.id === currentUserId ? 'online' : undefined}
+        status={online ? 'online' : 'offline'}
       />
       <span className="member-row-copy">
         <strong>{member.displayName}</strong>

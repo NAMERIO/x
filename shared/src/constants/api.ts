@@ -18,4 +18,9 @@ export const API_ROUTES = {
   members: {
     list: '/members',
   },
+  chat: {
+    messages: '/chat/messages',
+    message: (messageId: string) => `/chat/messages/${messageId}`,
+    reactions: (messageId: string) => `/chat/messages/${messageId}/reactions`,
+  },
 } as const;

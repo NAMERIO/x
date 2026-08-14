@@ -17,6 +17,11 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           target: environment.SERVER_PROXY_TARGET ?? 'http://127.0.0.1:3001',
         },
+        '/socket.io': {
+          changeOrigin: true,
+          target: environment.SERVER_PROXY_TARGET ?? 'http://127.0.0.1:3001',
+          ws: true,
+        },
       },
     },
     preview: {
@@ -25,6 +30,11 @@ export default defineConfig(({ mode }) => {
         '/api': {
           changeOrigin: true,
           target: environment.SERVER_PROXY_TARGET ?? 'http://127.0.0.1:3001',
+        },
+        '/socket.io': {
+          changeOrigin: true,
+          target: environment.SERVER_PROXY_TARGET ?? 'http://127.0.0.1:3001',
+          ws: true,
         },
       },
       strictPort: true,

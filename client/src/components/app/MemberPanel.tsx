@@ -5,7 +5,7 @@ import { MemberRow } from './MemberRow';
 
 interface MemberPanelProps {
   members: AdminMember[];
-  currentUserId: string;
+  onlineUserIds: readonly string[];
   loading: boolean;
   error: string | null;
   open: boolean;
@@ -14,7 +14,7 @@ interface MemberPanelProps {
 
 export function MemberPanel({
   members,
-  currentUserId,
+  onlineUserIds,
   loading,
   error,
   open,
@@ -38,13 +38,19 @@ export function MemberPanel({
           {!loading && !error && members.length === 0 && (
             <p className="member-panel-state">No members yet.</p>
           )}
-          {members.map((member) => (
-            <MemberRow
-              key={member.id}
-              member={member}
-              currentUserId={currentUserId}
-            />
-          ))}
+          {[...members]
+            .sort(
+              (left, right) =>
+                Number(onlineUserIds.includes(right.id)) -
+                Number(onlineUserIds.includes(left.id)),
+            )
+            .map((member) => (
+              <MemberRow
+                key={member.id}
+                member={member}
+                online={onlineUserIds.includes(member.id)}
+              />
+            ))}
         </div>
       </section>
     </aside>

@@ -1,5 +1,11 @@
 export { API_PREFIX, API_ROUTES } from './constants/api.js';
 export {
+  CHAT_HISTORY_DEFAULT_LIMIT,
+  CHAT_HISTORY_MAX_LIMIT,
+  CHAT_MESSAGE_MAX_LENGTH,
+  CHAT_SOCKET_EVENTS,
+} from './constants/chat.js';
+export {
   AUTH_PROVIDERS,
   OAUTH_PROVIDERS,
   type AuthProvider,
@@ -14,6 +20,16 @@ export {
   type PermissionCategory,
 } from './constants/permissions.js';
 export { healthResponseSchema } from './schemas/health.js';
+export {
+  chatAuthorSchema,
+  chatHistoryResponseSchema,
+  chatMessageSchema,
+  chatReactionSchema,
+  chatTypingPayloadSchema,
+  editMessageRequestSchema,
+  reactionRequestSchema,
+  sendMessageRequestSchema,
+} from './schemas/chat.js';
 export {
   authErrorSchema,
   authProvidersResponseSchema,
@@ -53,3 +69,20 @@ export type {
   UpdateRoleRequest,
 } from './types/authorization.js';
 export type { HealthResponse } from './types/health.js';
+export type {
+  ChatAuthor,
+  ChatClientToServerEvents,
+  ChatHistoryResponse,
+  ChatMessage,
+  ChatMessageDeletedEvent,
+  ChatPresenceEvent,
+  ChatPresenceSnapshot,
+  ChatReaction,
+  ChatReactionsUpdatedEvent,
+  ChatServerToClientEvents,
+  ChatTypingEvent,
+  ChatTypingPayload,
+  EditMessageRequest,
+  ReactionRequest,
+  SendMessageRequest,
+} from './types/chat.js';

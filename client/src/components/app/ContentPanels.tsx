@@ -198,14 +198,14 @@ export function CallsPanel() {
 
 interface MembersPanelProps {
   members: AdminMember[];
-  currentUserId: string;
+  onlineUserIds: readonly string[];
   loading: boolean;
   error: string | null;
 }
 
 export function MembersPanel({
   members,
-  currentUserId,
+  onlineUserIds,
   loading,
   error,
 }: MembersPanelProps) {
@@ -237,7 +237,7 @@ export function MembersPanel({
           <MemberRow
             key={member.id}
             member={member}
-            currentUserId={currentUserId}
+            online={onlineUserIds.includes(member.id)}
             detailed
           />
         ))}
