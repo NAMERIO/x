@@ -1,9 +1,11 @@
-import type { AuthProvider, AuthUser } from '@x/shared';
-import { and, eq, sql } from 'drizzle-orm';
+import { PERMISSIONS, type AuthProvider, type AuthUser } from '@x/shared';
+import { and, eq, inArray, sql } from 'drizzle-orm';
 
 import { database } from '../database/client.js';
 import {
   authAccounts,
+  permissions,
+  rolePermissions,
   roles,
   userRoles,
   users,
@@ -170,12 +172,38 @@ export async function createUserWithAccount(
             ? 'Full application ownership'
             : 'Default community membership',
           isDefault: !isOwner,
+          isSystem: true,
         })
         .returning({ id: roles.id });
     }
 
     if (!role) {
       throw new Error('Failed to create system role');
+    }
+
+    if (!isOwner) {
+      const defaultPermissions = await transaction
+        .select({ id: permissions.id })
+        .from(permissions)
+        .where(
+          inArray(permissions.identifier, [
+            PERMISSIONS.SEND_MESSAGES,
+            PERMISSIONS.JOIN_CALLS,
+            PERMISSIONS.START_CALLS,
+          ]),
+        );
+
+      if (defaultPermissions.length > 0) {
+        await transaction
+          .insert(rolePermissions)
+          .values(
+            defaultPermissions.map((permission) => ({
+              roleId: role.id,
+              permissionId: permission.id,
+            })),
+          )
+          .onConflictDoNothing();
+      }
     }
 
     await transaction.insert(userRoles).values({

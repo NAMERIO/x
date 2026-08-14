@@ -15,6 +15,13 @@
       "when": 1786725692149,
       "tag": "0001_legal_mathemanic",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786731137294,
+      "tag": "0002_strange_the_executioner",
+      "breakpoints": true
     }
   ]
 }

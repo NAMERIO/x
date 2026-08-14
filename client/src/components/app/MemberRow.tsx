@@ -1,25 +1,37 @@
+import type { AdminMember } from '@x/shared';
+
 import { Avatar } from './Avatar';
-import type { MockMember } from './types';
 
 interface MemberRowProps {
-  member: MockMember;
+  member: AdminMember;
+  currentUserId?: string;
   detailed?: boolean;
 }
 
-export function MemberRow({ member, detailed = false }: MemberRowProps) {
+export function MemberRow({
+  member,
+  currentUserId,
+  detailed = false,
+}: MemberRowProps) {
+  const roleNames =
+    member.roles.map((role) => role.name).join(', ') || 'Member';
+  const avatarColor =
+    member.roles.find((role) => role.color)?.color ?? '#557d9f';
+
   return (
     <div className={`member-row${detailed ? ' is-detailed' : ''}`}>
       <Avatar
-        name={member.name}
-        color={member.avatarColor}
+        name={member.displayName}
+        imageUrl={member.avatarUrl ?? undefined}
+        color={avatarColor}
         size={detailed ? 'medium' : 'small'}
-        status={member.presence}
+        status={member.id === currentUserId ? 'online' : undefined}
       />
       <span className="member-row-copy">
-        <strong>{member.name}</strong>
-        <small>{detailed ? member.status : member.role}</small>
+        <strong>{member.displayName}</strong>
+        <small>{detailed ? `@${member.username}` : roleNames}</small>
       </span>
-      {detailed && <span className="member-role-label">{member.role}</span>}
+      {detailed && <span className="member-role-label">{roleNames}</span>}
     </div>
   );
 }

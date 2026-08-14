@@ -2,6 +2,7 @@ import type { Permission } from '@x/shared';
 import { sql } from 'drizzle-orm';
 import {
   boolean,
+  check,
   index,
   pgEnum,
   pgTable,
@@ -45,7 +46,9 @@ export const roles = pgTable(
     id: uuid('id').defaultRandom().primaryKey(),
     name: varchar('name', { length: 64 }).notNull().unique('roles_name_unique'),
     description: text('description'),
+    color: varchar('color', { length: 7 }),
     isDefault: boolean('is_default').default(false).notNull(),
+    isSystem: boolean('is_system').default(false).notNull(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -54,9 +57,14 @@ export const roles = pgTable(
       .notNull(),
   },
   (table) => [
+    check(
+      'roles_color_format_check',
+      sql`${table.color} IS NULL OR ${table.color} ~ '^#[0-9A-Fa-f]{6}$'`,
+    ),
     uniqueIndex('roles_one_default_unique')
       .on(table.isDefault)
       .where(sql`${table.isDefault} = true`),
+    index('roles_is_system_idx').on(table.isSystem),
   ],
 );
 

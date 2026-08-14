@@ -6,7 +6,9 @@ import Fastify, { type FastifyServerOptions } from 'fastify';
 import { env } from './config/env.js';
 import { closeDatabase } from './database/client.js';
 import { authRoutes } from './routes/auth.js';
+import { authorizationRoutes } from './routes/authorization.js';
 import { healthRoutes } from './routes/health.js';
+import { memberRoutes } from './routes/members.js';
 
 export function buildApp(options: FastifyServerOptions = {}) {
   const app = Fastify(options);
@@ -16,8 +18,11 @@ export function buildApp(options: FastifyServerOptions = {}) {
     hook: 'onRequest',
   });
   app.register(rateLimit, { global: false });
+  app.decorateRequest('authorization', null);
   app.register(healthRoutes, { prefix: API_PREFIX });
   app.register(authRoutes, { prefix: API_PREFIX });
+  app.register(authorizationRoutes, { prefix: API_PREFIX });
+  app.register(memberRoutes, { prefix: API_PREFIX });
   app.addHook('onClose', closeDatabase);
 
   return app;

@@ -1,6 +1,7 @@
 interface AvatarProps {
   name: string;
   color: string;
+  imageUrl?: string;
   size?: 'small' | 'medium' | 'large';
   status?: 'online' | 'idle' | 'offline';
 }
@@ -14,14 +15,20 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
-export function Avatar({ name, color, size = 'medium', status }: AvatarProps) {
+export function Avatar({
+  name,
+  color,
+  imageUrl,
+  size = 'medium',
+  status,
+}: AvatarProps) {
   return (
     <span
       className={`app-avatar app-avatar-${size}`}
       style={{ backgroundColor: color }}
       aria-label={name}
     >
-      {getInitials(name)}
+      {imageUrl ? <img src={imageUrl} alt="" /> : getInitials(name)}
       {status && <i className={`presence-dot presence-${status}`} />}
     </span>
   );

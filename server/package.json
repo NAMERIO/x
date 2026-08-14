@@ -11,7 +11,7 @@
     "build": "tsc -p tsconfig.build.json",
     "start": "node --enable-source-maps dist/index.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "pnpm build && node --test test/health.test.mjs test/password.test.mjs",
+    "test": "pnpm build && node --test test/authorization.test.mjs test/health.test.mjs test/password.test.mjs",
     "db:generate": "pnpm --filter @x/shared build && drizzle-kit generate --config=src/database/drizzle.config.ts",
     "db:migrate": "pnpm --filter @x/shared build && drizzle-kit migrate --config=src/database/drizzle.config.ts",
     "db:studio": "pnpm --filter @x/shared build && drizzle-kit studio --config=src/database/drizzle.config.ts",

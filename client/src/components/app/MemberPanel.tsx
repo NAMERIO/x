@@ -1,21 +1,25 @@
+import type { AdminMember } from '@x/shared';
+
 import { Icon } from './Icon';
 import { MemberRow } from './MemberRow';
-import type { MockMember } from './types';
 
 interface MemberPanelProps {
-  members: MockMember[];
+  members: AdminMember[];
+  currentUserId: string;
+  loading: boolean;
+  error: string | null;
   open: boolean;
   onClose: () => void;
 }
 
-export function MemberPanel({ members, open, onClose }: MemberPanelProps) {
-  const activeMembers = members.filter(
-    (member) => member.presence !== 'offline',
-  );
-  const offlineMembers = members.filter(
-    (member) => member.presence === 'offline',
-  );
-
+export function MemberPanel({
+  members,
+  currentUserId,
+  loading,
+  error,
+  open,
+  onClose,
+}: MemberPanelProps) {
   return (
     <aside className={`member-panel${open ? ' is-open' : ''}`}>
       <div className="member-panel-mobile-header">
@@ -25,18 +29,21 @@ export function MemberPanel({ members, open, onClose }: MemberPanelProps) {
         </button>
       </div>
       <section>
-        <h2>Online — {activeMembers.length}</h2>
+        <h2>Community — {members.length}</h2>
         <div className="member-panel-list">
-          {activeMembers.map((member) => (
-            <MemberRow key={member.id} member={member} />
-          ))}
-        </div>
-      </section>
-      <section>
-        <h2>Offline — {offlineMembers.length}</h2>
-        <div className="member-panel-list">
-          {offlineMembers.map((member) => (
-            <MemberRow key={member.id} member={member} />
+          {loading && <p className="member-panel-state">Loading members…</p>}
+          {!loading && error && (
+            <p className="member-panel-state is-error">{error}</p>
+          )}
+          {!loading && !error && members.length === 0 && (
+            <p className="member-panel-state">No members yet.</p>
+          )}
+          {members.map((member) => (
+            <MemberRow
+              key={member.id}
+              member={member}
+              currentUserId={currentUserId}
+            />
           ))}
         </div>
       </section>

@@ -1,5 +1,7 @@
-import type { AuthUser } from '@x/shared';
-import { useState } from 'react';
+import type { AdminMember, AuthUser } from '@x/shared';
+import { useEffect, useState } from 'react';
+
+import { ApiError, getCommunityMembers } from '../../lib/api';
 
 import { ChatPanel } from './ChatPanel';
 import {
@@ -10,7 +12,6 @@ import {
   SettingsPanel,
 } from './ContentPanels';
 import { MemberPanel } from './MemberPanel';
-import { mockMembers } from './mockData';
 import { Sidebar } from './Sidebar';
 import { TopHeader } from './TopHeader';
 import type { AppTheme, AppView } from './types';
@@ -25,6 +26,9 @@ interface AppShellProps {
 export function AppShell({ user, signingOut, onLogout }: AppShellProps) {
   const [currentView, setCurrentView] = useState<AppView>('chat');
   const [memberPanelOpen, setMemberPanelOpen] = useState(true);
+  const [members, setMembers] = useState<AdminMember[]>([]);
+  const [membersLoading, setMembersLoading] = useState(true);
+  const [membersError, setMembersError] = useState<string | null>(null);
   const [theme, setTheme] = useState<AppTheme>(() =>
     window.localStorage.getItem('gtg-app-theme') === 'dark' ? 'dark' : 'warm',
   );
@@ -33,6 +37,31 @@ export function AppShell({ user, signingOut, onLogout }: AppShellProps) {
     setTheme(nextTheme);
     window.localStorage.setItem('gtg-app-theme', nextTheme);
   }
+
+  useEffect(() => {
+    let active = true;
+    void getCommunityMembers()
+      .then((response) => {
+        if (!active) return;
+        setMembers(response.members);
+        setMembersError(null);
+      })
+      .catch((error: unknown) => {
+        if (!active) return;
+        setMembersError(
+          error instanceof ApiError
+            ? error.message
+            : 'Could not load community members.',
+        );
+      })
+      .finally(() => {
+        if (active) setMembersLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [currentView]);
 
   return (
     <main className={`application-shell theme-${theme}`}>
@@ -53,7 +82,14 @@ export function AppShell({ user, signingOut, onLogout }: AppShellProps) {
             {currentView === 'announcements' && <AnnouncementsPanel />}
             {currentView === 'info' && <InfoPanel />}
             {currentView === 'calls' && <CallsPanel />}
-            {currentView === 'members' && <MembersPanel />}
+            {currentView === 'members' && (
+              <MembersPanel
+                members={members}
+                currentUserId={user.id}
+                loading={membersLoading}
+                error={membersError}
+              />
+            )}
             {currentView === 'settings' && (
               <SettingsPanel
                 user={user}
@@ -66,7 +102,10 @@ export function AppShell({ user, signingOut, onLogout }: AppShellProps) {
           </div>
           {currentView === 'chat' && (
             <MemberPanel
-              members={mockMembers}
+              members={members}
+              currentUserId={user.id}
+              loading={membersLoading}
+              error={membersError}
               open={memberPanelOpen}
               onClose={() => setMemberPanelOpen(false)}
             />

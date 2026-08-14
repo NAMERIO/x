@@ -1,10 +1,11 @@
-import type { AuthUser } from '@x/shared';
+import type { AdminMember, AuthUser } from '@x/shared';
 import { useState } from 'react';
 
 import { Avatar } from './Avatar';
+import { AuthorizationSettings } from './AuthorizationSettings';
 import { Icon } from './Icon';
 import { MemberRow } from './MemberRow';
-import { mockAnnouncements, mockMembers } from './mockData';
+import { mockAnnouncements } from './mockData';
 import type { AppTheme } from './types';
 
 export function AnnouncementsPanel() {
@@ -124,7 +125,7 @@ const callRooms = [
   {
     name: 'Community Room',
     description: 'Open voice room for casual conversation',
-    people: ['Maya Brooks', 'Daniel Okafor'],
+    people: [],
   },
   {
     name: 'Prayer Room',
@@ -134,7 +135,7 @@ const callRooms = [
   {
     name: 'Leadership Meeting',
     description: 'Private planning room for community leaders',
-    people: ['Elias Mensah'],
+    people: [],
   },
 ];
 
@@ -195,7 +196,19 @@ export function CallsPanel() {
   );
 }
 
-export function MembersPanel() {
+interface MembersPanelProps {
+  members: AdminMember[];
+  currentUserId: string;
+  loading: boolean;
+  error: string | null;
+}
+
+export function MembersPanel({
+  members,
+  currentUserId,
+  loading,
+  error,
+}: MembersPanelProps) {
   return (
     <section className="content-panel members-directory">
       <div className="content-panel-heading">
@@ -213,8 +226,20 @@ export function MembersPanel() {
         <span>Role</span>
       </div>
       <div className="member-directory-list">
-        {mockMembers.map((member) => (
-          <MemberRow key={member.id} member={member} detailed />
+        {loading && <p className="member-directory-state">Loading members…</p>}
+        {!loading && error && (
+          <p className="member-directory-state is-error">{error}</p>
+        )}
+        {!loading && !error && members.length === 0 && (
+          <p className="member-directory-state">No members yet.</p>
+        )}
+        {members.map((member) => (
+          <MemberRow
+            key={member.id}
+            member={member}
+            currentUserId={currentUserId}
+            detailed
+          />
         ))}
       </div>
     </section>
@@ -236,7 +261,9 @@ export function SettingsPanel({
   onChangeTheme,
   onLogout,
 }: SettingsPanelProps) {
-  const [section, setSection] = useState<'account' | 'appearance'>('account');
+  const [section, setSection] = useState<
+    'account' | 'appearance' | 'roles' | 'members'
+  >('account');
 
   return (
     <section className="content-panel settings-panel">
@@ -266,12 +293,27 @@ export function SettingsPanel({
         <button type="button">
           <Icon name="shield" size={16} /> Community settings
         </button>
-        <button type="button">
-          <Icon name="members" size={16} /> Roles & permissions
+        <button
+          className={section === 'members' ? 'is-active' : ''}
+          type="button"
+          onClick={() => setSection('members')}
+        >
+          <Icon name="members" size={16} /> Member management
+        </button>
+        <button
+          className={section === 'roles' ? 'is-active' : ''}
+          type="button"
+          onClick={() => setSection('roles')}
+        >
+          <Icon name="shield" size={16} /> Roles & permissions
         </button>
       </div>
       <div className="settings-content">
-        {section === 'account' ? (
+        {section === 'roles' ? (
+          <AuthorizationSettings view="roles" />
+        ) : section === 'members' ? (
+          <AuthorizationSettings view="members" />
+        ) : section === 'account' ? (
           <>
             <p className="section-kicker">Account</p>
             <h2>Your profile</h2>

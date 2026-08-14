@@ -11,4 +11,11 @@ export const API_ROUTES = {
     oauthGoogle: '/auth/oauth/google',
     oauthFacebook: '/auth/oauth/facebook',
   },
+  authorization: {
+    roles: '/authorization/roles',
+    members: '/authorization/members',
+  },
+  members: {
+    list: '/members',
+  },
 } as const;

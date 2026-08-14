@@ -1,6 +1,4 @@
 import { Icon } from './Icon';
-import { MessageRow } from './MessageRow';
-import { mockMessages } from './mockData';
 
 interface ChatPanelProps {
   channel: string;
@@ -17,13 +15,12 @@ export function ChatPanel({ channel }: ChatPanelProps) {
           <h2>Welcome to #{channel}</h2>
           <p>This is the beginning of the #{channel} room.</p>
         </div>
-        <div className="date-separator">
-          <span>August 14, 2026</span>
-        </div>
-        <div className="message-list">
-          {mockMessages.map((message) => (
-            <MessageRow key={message.id} message={message} />
-          ))}
+        <div className="chat-empty-state">
+          <Icon name="chat" size={20} />
+          <strong>No messages yet</strong>
+          <span>
+            Real community messages will appear here once chat is connected.
+          </span>
         </div>
       </div>
       <div className="message-composer-wrap">

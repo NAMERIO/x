@@ -4,10 +4,20 @@ import {
   authErrorSchema,
   authProvidersResponseSchema,
   authResponseSchema,
+  membersResponseSchema,
+  roleSchema,
+  rolesResponseSchema,
+  type AdminMember,
+  type AuthorizationRole,
   type AuthProvidersResponse,
   type AuthUser,
+  type CreateRoleRequest,
   type LoginRequest,
+  type MembersResponse,
   type RegisterRequest,
+  type RolesResponse,
+  type SetMemberRolesRequest,
+  type UpdateRoleRequest,
 } from '@x/shared';
 
 export const apiBaseUrl = (
@@ -92,4 +102,68 @@ export function getOAuthUrl(provider: 'google' | 'facebook'): string {
       ? API_ROUTES.auth.oauthGoogle
       : API_ROUTES.auth.oauthFacebook;
   return `${apiBaseUrl}${route}`;
+}
+
+export async function getRoles(): Promise<RolesResponse> {
+  const response = await request(API_ROUTES.authorization.roles);
+  return rolesResponseSchema.parse(await response.json());
+}
+
+export async function createRole(
+  input: CreateRoleRequest,
+): Promise<AuthorizationRole> {
+  const response = await request(API_ROUTES.authorization.roles, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+  return roleSchema.parse(await response.json());
+}
+
+export async function updateRole(
+  roleId: string,
+  input: UpdateRoleRequest,
+): Promise<AuthorizationRole> {
+  const response = await request(
+    `${API_ROUTES.authorization.roles}/${roleId}`,
+    {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(input),
+    },
+  );
+  return roleSchema.parse(await response.json());
+}
+
+export async function deleteRole(roleId: string): Promise<void> {
+  await request(`${API_ROUTES.authorization.roles}/${roleId}`, {
+    method: 'DELETE',
+  });
+}
+
+export async function getAdminMembers(): Promise<MembersResponse> {
+  const response = await request(API_ROUTES.authorization.members);
+  return membersResponseSchema.parse(await response.json());
+}
+
+export async function getCommunityMembers(): Promise<MembersResponse> {
+  const response = await request(API_ROUTES.members.list);
+  return membersResponseSchema.parse(await response.json());
+}
+
+export async function setAdminMemberRoles(
+  memberId: string,
+  input: SetMemberRolesRequest,
+): Promise<AdminMember> {
+  const response = await request(
+    `${API_ROUTES.authorization.members}/${memberId}/roles`,
+    {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(input),
+    },
+  );
+  return membersResponseSchema.shape.members.element.parse(
+    await response.json(),
+  );
 }
