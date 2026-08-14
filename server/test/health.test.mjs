@@ -19,5 +19,14 @@ test('GET /api/health reports that the server is running', async () => {
   assert.equal(body.status, 'ok');
   assert.equal(body.service, 'x-server');
 
+  const providersResponse = await app.inject({
+    method: 'GET',
+    url: `${API_PREFIX}/auth/providers`,
+  });
+  assert.equal(providersResponse.statusCode, 200);
+  const providerBody = providersResponse.json();
+  assert.equal(typeof providerBody.providers.google, 'boolean');
+  assert.equal(typeof providerBody.providers.facebook, 'boolean');
+
   await app.close();
 });
