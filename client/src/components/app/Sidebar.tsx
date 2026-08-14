@@ -7,33 +7,17 @@ import { UserControls } from './UserControls';
 
 interface SidebarProps {
   currentView: AppView;
-  currentChannel: string;
   user: AuthUser;
   onChangeView: (view: AppView) => void;
-  onChangeChannel: (channel: string) => void;
 }
 
 const primaryNavigation = [
-  { id: 'chat', label: 'Chat', icon: 'chat' },
-  { id: 'announcements', label: 'Announcements', icon: 'announcement' },
   { id: 'calls', label: 'Calls', icon: 'call' },
   { id: 'members', label: 'Members', icon: 'members' },
   { id: 'settings', label: 'Settings / Admin', icon: 'settings' },
 ] as const;
 
-const channels = [
-  { id: 'general', label: 'general', unread: '' },
-  { id: 'introductions', label: 'introductions', unread: '3' },
-  { id: 'prayer-requests', label: 'prayer-requests', unread: '' },
-];
-
-export function Sidebar({
-  currentView,
-  currentChannel,
-  user,
-  onChangeView,
-  onChangeChannel,
-}: SidebarProps) {
+export function Sidebar({ currentView, user, onChangeView }: SidebarProps) {
   return (
     <aside className="app-sidebar">
       <div className="community-identity">
@@ -46,50 +30,37 @@ export function Sidebar({
       </div>
 
       <nav className="app-primary-nav" aria-label="Main navigation">
+        <NavigationItem
+          icon="info"
+          label="Info"
+          active={currentView === 'info'}
+          onClick={() => onChangeView('info')}
+        />
+        <NavigationItem
+          icon="announcement"
+          label="Announcements"
+          active={currentView === 'announcements'}
+          badge="2"
+          onClick={() => onChangeView('announcements')}
+        />
+        <NavigationItem
+          icon="chat"
+          label="Community"
+          active={currentView === 'chat'}
+          onClick={() => onChangeView('chat')}
+        />
         {primaryNavigation.map((item) => (
           <NavigationItem
             key={item.id}
             icon={item.icon}
             label={item.label}
             active={currentView === item.id}
-            badge={item.id === 'announcements' ? '2' : undefined}
             onClick={() => onChangeView(item.id)}
           />
         ))}
       </nav>
 
-      <div className="sidebar-divider" />
-
-      <section className="channel-navigation">
-        <div className="sidebar-section-label">
-          <span>Chat rooms</span>
-          <button type="button" aria-label="Add chat room" title="Add room">
-            <Icon name="plus" size={14} />
-          </button>
-        </div>
-        <div className="channel-list">
-          {channels.map((channel) => (
-            <button
-              key={channel.id}
-              className={
-                currentView === 'chat' && currentChannel === channel.id
-                  ? 'is-active'
-                  : ''
-              }
-              type="button"
-              title={`# ${channel.label}`}
-              onClick={() => {
-                onChangeView('chat');
-                onChangeChannel(channel.id);
-              }}
-            >
-              <Icon name="hash" size={16} />
-              <span>{channel.label}</span>
-              {channel.unread && <i>{channel.unread}</i>}
-            </button>
-          ))}
-        </div>
-      </section>
+      <div className="sidebar-spacer" />
 
       <UserControls
         name={user.displayName}

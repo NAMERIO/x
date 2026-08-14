@@ -1,5 +1,5 @@
 export type AppView =
-  'chat' | 'announcements' | 'calls' | 'members' | 'settings';
+  'chat' | 'announcements' | 'info' | 'calls' | 'members' | 'settings';
 
 export type AppTheme = 'warm' | 'dark';
 

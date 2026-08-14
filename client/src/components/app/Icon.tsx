@@ -16,6 +16,7 @@ export type IconName =
   | 'headphones'
   | 'help'
   | 'inbox'
+  | 'info'
   | 'members'
   | 'menu'
   | 'microphone'
@@ -101,6 +102,12 @@ const paths: Record<IconName, React.ReactNode> = {
     <>
       <path d="M4 5h16l2 10v4H2v-4L4 5Z" />
       <path d="M2 15h5l2 2h6l2-2h5" />
+    </>
+  ),
+  info: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v6M12 7h.01" />
     </>
   ),
   members: (

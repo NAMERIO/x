@@ -5,6 +5,7 @@ import { ChatPanel } from './ChatPanel';
 import {
   AnnouncementsPanel,
   CallsPanel,
+  InfoPanel,
   MembersPanel,
   SettingsPanel,
 } from './ContentPanels';
@@ -23,7 +24,6 @@ interface AppShellProps {
 
 export function AppShell({ user, signingOut, onLogout }: AppShellProps) {
   const [currentView, setCurrentView] = useState<AppView>('chat');
-  const [currentChannel, setCurrentChannel] = useState('general');
   const [memberPanelOpen, setMemberPanelOpen] = useState(true);
   const [theme, setTheme] = useState<AppTheme>(() =>
     window.localStorage.getItem('gtg-app-theme') === 'dark' ? 'dark' : 'warm',
@@ -38,22 +38,20 @@ export function AppShell({ user, signingOut, onLogout }: AppShellProps) {
     <main className={`application-shell theme-${theme}`}>
       <Sidebar
         currentView={currentView}
-        currentChannel={currentChannel}
         user={user}
         onChangeView={setCurrentView}
-        onChangeChannel={setCurrentChannel}
       />
       <section className="application-workspace">
         <TopHeader
           view={currentView}
-          channel={currentChannel}
           memberPanelOpen={memberPanelOpen}
           onToggleMemberPanel={() => setMemberPanelOpen((current) => !current)}
         />
         <div className="application-content-row">
           <div className="application-main-content">
-            {currentView === 'chat' && <ChatPanel channel={currentChannel} />}
+            {currentView === 'chat' && <ChatPanel channel="community" />}
             {currentView === 'announcements' && <AnnouncementsPanel />}
+            {currentView === 'info' && <InfoPanel />}
             {currentView === 'calls' && <CallsPanel />}
             {currentView === 'members' && <MembersPanel />}
             {currentView === 'settings' && (

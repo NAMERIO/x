@@ -3,7 +3,6 @@ import type { AppView } from './types';
 
 interface TopHeaderProps {
   view: AppView;
-  channel: string;
   memberPanelOpen: boolean;
   onToggleMemberPanel: () => void;
 }
@@ -15,6 +14,10 @@ const viewDetails: Record<
   announcements: {
     title: 'Announcements',
     subtitle: 'Important updates from community leaders',
+  },
+  info: {
+    title: 'Info',
+    subtitle: 'Church information, schedule, and contact details',
   },
   calls: {
     title: 'Calls',
@@ -32,20 +35,14 @@ const viewDetails: Record<
 
 export function TopHeader({
   view,
-  channel,
   memberPanelOpen,
   onToggleMemberPanel,
 }: TopHeaderProps) {
   const details =
     view === 'chat'
       ? {
-          title: channel,
-          subtitle:
-            channel === 'general'
-              ? 'Everyday conversation for the whole community'
-              : channel === 'introductions'
-                ? 'Say hello and get to know one another'
-                : 'Share requests and support one another',
+          title: 'Community',
+          subtitle: 'Conversation and important community updates',
         }
       : viewDetails[view];
 
@@ -56,14 +53,16 @@ export function TopHeader({
           <Icon
             name={
               view === 'chat'
-                ? 'hash'
+                ? 'chat'
                 : view === 'calls'
                   ? 'call'
                   : view === 'members'
                     ? 'members'
                     : view === 'settings'
                       ? 'settings'
-                      : 'announcement'
+                      : view === 'info'
+                        ? 'info'
+                        : 'announcement'
             }
           />
         </span>

@@ -50,6 +50,76 @@ export function AnnouncementsPanel() {
   );
 }
 
+export function InfoPanel() {
+  return (
+    <section className="content-panel info-panel">
+      <div className="content-panel-heading">
+        <div>
+          <p className="section-kicker">Church information</p>
+          <h2>God Thirsty Generation</h2>
+        </div>
+      </div>
+      <div className="info-layout">
+        <section className="info-about">
+          <img
+            src="/god-thirsty-generation-logo.png"
+            alt="God Thirsty Generation"
+          />
+          <div>
+            <h3>About our community</h3>
+            <p>
+              This page is ready for the church description, mission, and other
+              information leaders want every member to have nearby.
+            </p>
+          </div>
+        </section>
+        <section className="info-details">
+          <h3>Weekly schedule</h3>
+          <div className="info-detail-row">
+            <span>
+              <Icon name="calendar" size={17} />
+            </span>
+            <div>
+              <strong>Sunday gathering</strong>
+              <small>Sundays · 10:00 AM</small>
+            </div>
+          </div>
+          <div className="info-detail-row">
+            <span>
+              <Icon name="members" size={17} />
+            </span>
+            <div>
+              <strong>Community night</strong>
+              <small>Wednesdays · 7:00 PM</small>
+            </div>
+          </div>
+        </section>
+        <section className="info-details">
+          <h3>Contact</h3>
+          <div className="info-detail-row">
+            <span>
+              <Icon name="at" size={17} />
+            </span>
+            <div>
+              <strong>Community email</strong>
+              <small>hello@godthirstygeneration.org</small>
+            </div>
+          </div>
+          <div className="info-detail-row">
+            <span>
+              <Icon name="info" size={17} />
+            </span>
+            <div>
+              <strong>More information</strong>
+              <small>Church leaders can update these details later.</small>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
 const callRooms = [
   {
     name: 'Community Room',
