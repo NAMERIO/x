@@ -12,7 +12,7 @@ import { MemberPanel } from './MemberPanel';
 import { mockMembers } from './mockData';
 import { Sidebar } from './Sidebar';
 import { TopHeader } from './TopHeader';
-import type { AppView } from './types';
+import type { AppTheme, AppView } from './types';
 import './app-shell.css';
 
 interface AppShellProps {
@@ -25,9 +25,17 @@ export function AppShell({ user, signingOut, onLogout }: AppShellProps) {
   const [currentView, setCurrentView] = useState<AppView>('chat');
   const [currentChannel, setCurrentChannel] = useState('general');
   const [memberPanelOpen, setMemberPanelOpen] = useState(true);
+  const [theme, setTheme] = useState<AppTheme>(() =>
+    window.localStorage.getItem('gtg-app-theme') === 'dark' ? 'dark' : 'warm',
+  );
+
+  function changeTheme(nextTheme: AppTheme) {
+    setTheme(nextTheme);
+    window.localStorage.setItem('gtg-app-theme', nextTheme);
+  }
 
   return (
-    <main className="application-shell">
+    <main className={`application-shell theme-${theme}`}>
       <Sidebar
         currentView={currentView}
         currentChannel={currentChannel}
@@ -51,7 +59,9 @@ export function AppShell({ user, signingOut, onLogout }: AppShellProps) {
             {currentView === 'settings' && (
               <SettingsPanel
                 user={user}
+                theme={theme}
                 signingOut={signingOut}
+                onChangeTheme={changeTheme}
                 onLogout={onLogout}
               />
             )}

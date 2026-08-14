@@ -1,9 +1,11 @@
 import type { AuthUser } from '@x/shared';
+import { useState } from 'react';
 
 import { Avatar } from './Avatar';
 import { Icon } from './Icon';
 import { MemberRow } from './MemberRow';
 import { mockAnnouncements, mockMembers } from './mockData';
+import type { AppTheme } from './types';
 
 export function AnnouncementsPanel() {
   return (
@@ -151,21 +153,38 @@ export function MembersPanel() {
 
 interface SettingsPanelProps {
   user: AuthUser;
+  theme: AppTheme;
   signingOut: boolean;
+  onChangeTheme: (theme: AppTheme) => void;
   onLogout: () => void;
 }
 
 export function SettingsPanel({
   user,
+  theme,
   signingOut,
+  onChangeTheme,
   onLogout,
 }: SettingsPanelProps) {
+  const [section, setSection] = useState<'account' | 'appearance'>('account');
+
   return (
     <section className="content-panel settings-panel">
       <div className="settings-navigation" aria-label="Settings sections">
         <p>Personal</p>
-        <button className="is-active" type="button">
+        <button
+          className={section === 'account' ? 'is-active' : ''}
+          type="button"
+          onClick={() => setSection('account')}
+        >
           <Icon name="settings" size={16} /> Account
+        </button>
+        <button
+          className={section === 'appearance' ? 'is-active' : ''}
+          type="button"
+          onClick={() => setSection('appearance')}
+        >
+          <Icon name="sidebar" size={16} /> Appearance
         </button>
         <button type="button">
           <Icon name="bell" size={16} /> Notifications
@@ -182,48 +201,116 @@ export function SettingsPanel({
         </button>
       </div>
       <div className="settings-content">
-        <p className="section-kicker">Account</p>
-        <h2>Your profile</h2>
-        <div className="profile-summary">
-          <Avatar
-            name={user.displayName}
-            color="#3f6ea8"
-            size="large"
-            status="online"
-          />
-          <div>
-            <strong>{user.displayName}</strong>
-            <span>{user.email ?? 'Connected social account'}</span>
-            {user.isOwner && <small>Application owner</small>}
-          </div>
-          <button type="button">Edit profile</button>
-        </div>
-        <div className="settings-field-list">
-          <div>
-            <span>Display name</span>
-            <strong>{user.displayName}</strong>
-            <button type="button">Edit</button>
-          </div>
-          <div>
-            <span>Email address</span>
-            <strong>{user.email ?? 'Connected social account'}</strong>
-            <button type="button">Edit</button>
-          </div>
-          <div>
-            <span>Theme</span>
-            <strong>Dark</strong>
-            <button type="button">Change</button>
-          </div>
-        </div>
-        <div className="settings-session-row">
-          <div>
-            <strong>Current session</strong>
-            <span>Sign out of this device.</span>
-          </div>
-          <button type="button" disabled={signingOut} onClick={onLogout}>
-            {signingOut ? 'Signing out…' : 'Sign out'}
-          </button>
-        </div>
+        {section === 'account' ? (
+          <>
+            <p className="section-kicker">Account</p>
+            <h2>Your profile</h2>
+            <div className="profile-summary">
+              <Avatar
+                name={user.displayName}
+                color="#3f6ea8"
+                size="large"
+                status="online"
+              />
+              <div>
+                <strong>{user.displayName}</strong>
+                <span>{user.email ?? 'Connected social account'}</span>
+                {user.isOwner && <small>Application owner</small>}
+              </div>
+              <button type="button">Edit profile</button>
+            </div>
+            <div className="settings-field-list">
+              <div>
+                <span>Display name</span>
+                <strong>{user.displayName}</strong>
+                <button type="button">Edit</button>
+              </div>
+              <div>
+                <span>Email address</span>
+                <strong>{user.email ?? 'Connected social account'}</strong>
+                <button type="button">Edit</button>
+              </div>
+              <div>
+                <span>Theme</span>
+                <strong>{theme === 'dark' ? 'Dark' : 'Warm'}</strong>
+                <button type="button" onClick={() => setSection('appearance')}>
+                  Change
+                </button>
+              </div>
+            </div>
+            <div className="settings-session-row">
+              <div>
+                <strong>Current session</strong>
+                <span>Sign out of this device.</span>
+              </div>
+              <button type="button" disabled={signingOut} onClick={onLogout}>
+                {signingOut ? 'Signing out…' : 'Sign out'}
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <button
+              className="appearance-back"
+              type="button"
+              onClick={() => setSection('account')}
+            >
+              ← Account settings
+            </button>
+            <p className="section-kicker">Appearance</p>
+            <h2>Choose your theme</h2>
+            <p className="appearance-description">
+              Change how the application looks on this device. Your selection is
+              saved automatically.
+            </p>
+            <div
+              className="theme-options"
+              role="radiogroup"
+              aria-label="Application theme"
+            >
+              <button
+                className={theme === 'warm' ? 'is-selected' : ''}
+                type="button"
+                role="radio"
+                aria-checked={theme === 'warm'}
+                onClick={() => onChangeTheme('warm')}
+              >
+                <span className="theme-preview theme-preview-warm">
+                  <i />
+                  <b />
+                  <em />
+                </span>
+                <span className="theme-option-copy">
+                  <strong>Warm</strong>
+                  <small>Muted stone surfaces with teal navigation</small>
+                </span>
+                <span className="theme-check">
+                  {theme === 'warm' && <Icon name="check" size={14} />}
+                </span>
+              </button>
+              <button
+                className={theme === 'dark' ? 'is-selected' : ''}
+                type="button"
+                role="radio"
+                aria-checked={theme === 'dark'}
+                onClick={() => onChangeTheme('dark')}
+              >
+                <span className="theme-preview theme-preview-dark">
+                  <i />
+                  <b />
+                  <em />
+                </span>
+                <span className="theme-option-copy">
+                  <strong>Dark</strong>
+                  <small>Low-light charcoal surfaces with muted accents</small>
+                </span>
+                <span className="theme-check">
+                  {theme === 'dark' && <Icon name="check" size={14} />}
+                </span>
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

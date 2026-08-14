@@ -1,6 +1,8 @@
 export type AppView =
   'chat' | 'announcements' | 'calls' | 'members' | 'settings';
 
+export type AppTheme = 'warm' | 'dark';
+
 export type Presence = 'online' | 'idle' | 'offline';
 
 export interface MockMember {
