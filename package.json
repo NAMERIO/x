@@ -1,0 +1,33 @@
+{
+  "name": "x",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.18.0",
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=11.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm run build:shared && pnpm --parallel --stream --filter @x/shared --filter @x/server --filter @x/client run dev",
+    "build": "pnpm run clean && pnpm --filter @x/shared build && pnpm --filter @x/server build && pnpm --filter @x/client build",
+    "build:shared": "pnpm --filter @x/shared build",
+    "typecheck": "pnpm run build:shared && pnpm --filter @x/server typecheck && pnpm --filter @x/client typecheck",
+    "lint": "eslint . --max-warnings 0",
+    "test": "pnpm --filter @x/server test",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "clean": "pnpm -r --if-present run clean",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "prettier": "^3.7.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.50.1"
+  }
+}
