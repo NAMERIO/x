@@ -1,52 +1,7 @@
-# X
-
-Initial monorepo foundation for a modern communication platform. This repository currently contains infrastructure only: a React client, a Fastify server, and shared TypeScript contracts.
-
-## Requirements
-
-- Node.js 22 or newer
-- pnpm 11 or newer
-
-## Workspace layout
-
-```text
-.
-├── client/   # React + TypeScript + Vite browser application
-├── server/   # Node.js + TypeScript + Fastify HTTP service
-└── shared/   # Runtime-safe schemas, constants, and shared types
-```
-
-The boundaries are intentionally small. The layout takes high-level inspiration from large communication-platform monorepos such as Rocket.Chat—applications depend on focused shared packages—but does not reproduce their implementation or complexity. The local `survev/` folder is reference material only and is excluded from the workspace and Git.
-
-## Getting started
-
 ```bash
 pnpm install
 pnpm dev
 ```
-
-If Windows PowerShell blocks the `pnpm.ps1` shim, use `pnpm.cmd install` and `pnpm.cmd dev` instead.
-
-The development command starts all three workspace packages in watch mode:
-
-- client: <http://localhost:3000>
-- server: <http://localhost:3001>
-- health endpoint: <http://localhost:3001/api/health>
-
-The home screen requests the health endpoint and displays whether the API is reachable.
-
-## Environment variables
-
-Defaults are suitable for local development. Copy the examples only when you need to override them:
-
-```bash
-cp server/.env.example server/.env
-cp client/.env.example client/.env
-```
-
-Only variables prefixed with `VITE_` are available to browser code. `SERVER_PROXY_TARGET` is consumed by Vite's development server and is not exposed to the application.
-
-## Scripts
 
 ```bash
 pnpm dev          # build shared contracts once, then watch all packages
@@ -56,10 +11,7 @@ pnpm lint         # lint workspace source and configuration
 pnpm test         # run the server health-route test
 pnpm check        # lint, typecheck, test, and build
 pnpm clean        # remove generated output
+pnpm db:generate  # generate SQL migrations from the Drizzle schema
+pnpm db:migrate   # apply pending migrations to PostgreSQL
+pnpm db:studio    # inspect the configured database with Drizzle Studio
 ```
-
-To run one package directly, use a workspace filter, for example `pnpm --filter @x/server dev`.
-
-## Scope
-
-This step intentionally does not include authentication, persistence, messaging, WebSockets, voice/video, desktop/mobile wrappers, or deployment infrastructure. Those concerns can be introduced behind new package or service boundaries when requirements are defined. LiveKit is a future architectural reference only and is not a dependency.

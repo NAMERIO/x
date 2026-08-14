@@ -9,5 +9,5 @@
     "sourceMap": true,
     "tsBuildInfoFile": "tsconfig.tsbuildinfo"
   },
-  "exclude": ["src/**/*.test.ts"]
+  "exclude": ["src/**/*.test.ts", "src/database/drizzle.config.ts"]
 }
