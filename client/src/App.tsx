@@ -10,6 +10,7 @@ import {
   logout,
   register,
 } from './lib/api';
+import { AppShell } from './components/app/AppShell';
 
 type AuthMode = 'login' | 'register';
 
@@ -211,28 +212,11 @@ export function App() {
 
   if (user) {
     return (
-      <PageLayout>
-        <div className="auth-content signed-in-content">
-          <span className="success-mark">✓</span>
-          <p className="signed-in-label">Signed in</p>
-          <h2>Welcome, {user.displayName}</h2>
-          <p className="form-subtitle">
-            Your account is ready. Communication features will be added later.
-          </p>
-          {user.isOwner && (
-            <span className="owner-badge">Application owner</span>
-          )}
-          {errorMessage && <div className="error-message">{errorMessage}</div>}
-          <button
-            className="secondary-button"
-            type="button"
-            disabled={submitting}
-            onClick={() => void handleLogout()}
-          >
-            {submitting ? 'Signing out…' : 'Sign out'}
-          </button>
-        </div>
-      </PageLayout>
+      <AppShell
+        user={user}
+        signingOut={submitting}
+        onLogout={() => void handleLogout()}
+      />
     );
   }
 
