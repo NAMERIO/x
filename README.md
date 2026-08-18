@@ -2,8 +2,6 @@
 
 ```bash
 pnpm install
-cp server/.env.example server/.env
-cp client/.env.example client/.env
 pnpm db:migrate
 pnpm dev
 ```
